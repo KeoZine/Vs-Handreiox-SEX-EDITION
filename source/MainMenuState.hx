@@ -27,6 +27,7 @@ class MainMenuState extends MusicBeatState
 {
 	public static var psychEngineVersion:String = '0.6.3'; //This is also used for Discord RPC
 	public static var curSelected:Int = 0;
+	public static var firstStart:Bool = true;
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	private var camGame:FlxCamera;
@@ -35,10 +36,10 @@ class MainMenuState extends MusicBeatState
 	var optionShit:Array<String> = [
 		'story_mode',
 		'freeplay',
-		#if MODS_ALLOWED 'mods', #end
-		#if ACHIEVEMENTS_ALLOWED 'awards', #end
+		//#if MODS_ALLOWED 'mods', #end
+		//#if ACHIEVEMENTS_ALLOWED 'awards', #end
 		'credits',
-		#if !switch 'donate', #end
+		//#if !switch 'donate', #end
 		'options'
 	];
 
@@ -126,7 +127,41 @@ class MainMenuState extends MusicBeatState
 			menuItem.antialiasing = ClientPrefs.globalAntialiasing;
 			//menuItem.setGraphicSize(Std.int(menuItem.width * 0.58));
 			menuItem.updateHitbox();
+			
+			switch (i)
+				{
+					case 0: 
+						menuItem.y = 34.95;
+						menuItem.x = 299.4;
+
+					case 1: 
+						menuItem.y = 193.75;
+						menuItem.x = 569.8;
+
+					case 2:
+						menuItem.y = 393;
+						menuItem.x = 716.5;
+					case 3:
+						menuItem.x = 712.9;
+						menuItem.y = 594.75;
+
+				}
 		}
+			
+			if(FlxG.save.data.antialiasing)
+			    {
+				    menuItem.antialiasing = true;
+			    }
+			if (firstStart)
+			    FlxTween.tween(menuItem,{y: 60 + (i * 160)},1 + (i * 0.25) ,{ease: FlxEase.expoInOut, onComplete: function(flxTween:FlxTween) 
+			    { 
+				    changeItem();
+			    }});
+			else
+			    menuItem.y = 60 + (i * 160);
+
+		}
+		firstStart = false+
 
 		FlxG.camera.follow(camFollowPos, null, 1);
 
@@ -239,12 +274,12 @@ class MainMenuState extends MusicBeatState
 										MusicBeatState.switchState(new StoryMenuState());
 									case 'freeplay':
 										MusicBeatState.switchState(new FreeplayState());
-									#if MODS_ALLOWED
-									case 'mods':
-										MusicBeatState.switchState(new ModsMenuState());
-									#end
-									case 'awards':
-										MusicBeatState.switchState(new AchievementsMenuState());
+									//#if MODS_ALLOWED
+									//case 'mods':
+										//MusicBeatState.switchState(new ModsMenuState());
+									//#end
+									//case 'awards':
+										//MusicBeatState.switchState(new AchievementsMenuState());
 									case 'credits':
 										MusicBeatState.switchState(new CreditsState());
 									case 'options':
@@ -268,7 +303,7 @@ class MainMenuState extends MusicBeatState
 
 		menuItems.forEach(function(spr:FlxSprite)
 		{
-			spr.screenCenter(X);
+			//spr.screenCenter(X);
 		});
 	}
 
